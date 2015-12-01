@@ -12,17 +12,19 @@
 @interface DailyCalendarView()
 @property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) UIView *dateLabelContainer;
+@property (nonatomic, strong) UIImageView *selectedIndicator;
 @end
 
 
 #define DATE_LABEL_SIZE 28
-#define DATE_LABEL_FONT_SIZE 13
 #define DATE_LABEL_SIZE_SELECTED 45
+#define DATE_LABEL_FONT_SIZE 13
 #define DATE_LABEL_FONT_SIZE_SELECTED 14
 #define DATE_LABEL_FONT_COLOR [UIColor colorWithRed:0.333 green:0.831 blue:0.776 alpha:1.000]
 #define DATE_LABEL_FONT_COLOR_SELECTED [UIColor colorWithRed:0.208 green:0.698 blue:0.863 alpha:1.000]
 #define DATE_LABEL_BG_COLOR [UIColor whiteColor]
 #define DATE_LABEL_BG_COLOR_SELECTED [UIColor whiteColor]
+#define INDICATOR_BORDER_WIDTH 8
 
 
 @implementation DailyCalendarView
@@ -32,8 +34,8 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+        [self addSubview:self.selectedIndicator];
         [self addSubview:self.dateLabelContainer];
-        
         UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dailyViewDidClick:)];
         [self addGestureRecognizer:singleFingerTap];
     }
@@ -64,6 +66,16 @@
     }
     
     return _dateLabel;
+}
+
+- (UIImageView*)selectedIndicator {
+    if (!_selectedIndicator) {
+        float x = (self.bounds.size.width - DATE_LABEL_SIZE_SELECTED)/2 - INDICATOR_BORDER_WIDTH;
+        _selectedIndicator = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"date_selected_indicator"]];
+        [_selectedIndicator setFrame:CGRectMake(x, x, DATE_LABEL_SIZE_SELECTED + INDICATOR_BORDER_WIDTH * 2, DATE_LABEL_SIZE_SELECTED + INDICATOR_BORDER_WIDTH * 2)];
+        [_selectedIndicator setContentMode:UIViewContentModeScaleAspectFill];
+    }
+    return _selectedIndicator;
 }
 
 -(void)setDate:(NSDate *)date
@@ -126,7 +138,7 @@
         [_dateLabel setFont:[UIFont systemFontOfSize:DATE_LABEL_FONT_SIZE]];
         [_dateLabel setTextColor:DATE_LABEL_FONT_COLOR];
     }
-    
+    [_selectedIndicator setHidden:!blnSelected];
     _blnSelected = blnSelected;
     [self setNeedsDisplay];
     
