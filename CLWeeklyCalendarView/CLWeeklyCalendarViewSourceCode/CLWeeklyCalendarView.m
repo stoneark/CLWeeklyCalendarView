@@ -21,7 +21,7 @@
 #define DATE_TITLE_MARGIN_TOP 22.f
 
 #define DATE_VIEW_MARGIN 3.f
-#define DATE_VIEW_HEIGHT 28.f
+#define DATE_VIEW_HEIGHT 50.f
 
 
 #define DATE_LABEL_MARGIN_LEFT 9.f
@@ -357,6 +357,9 @@ static float const CLCalendarSelectedDatePrintFontSizeDefault = 13.f;
     NSDate *selectedDate = [param objectForKeyWithNil:@"selectedDate"];
     CGFloat dailyWidth = self.bounds.size.width/WEEKLY_VIEW_COUNT;
     
+    selectedDate = [self.selectedDate addDays:step * 7];
+    self.selectedDate = selectedDate;
+    [self dailyCalendarViewDidSelect:selectedDate];
     
     NSDate *dtStart;
     if(blnToday){
