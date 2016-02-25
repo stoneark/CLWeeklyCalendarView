@@ -348,6 +348,13 @@ static float const CLCalendarSelectedDatePrintFontSizeDefault = 13.f;
     }
     
     [self performSelector:@selector(renderSwipeDates:) withObject:data afterDelay:0.05f];
+    
+    // 左滑或右滑后自动选择前一周或后一周的对应日期。
+    if (!selectedDate) {
+        int step = blnSwipeRight ? -1 : 1;
+        selectedDate = [self.selectedDate addDays:step * 7];
+    }
+    [self performSelector:@selector(redrawToDate:) withObject:selectedDate afterDelay:0.5];
 }
 
 -(void)renderSwipeDates: (NSDictionary*)param
@@ -357,9 +364,6 @@ static float const CLCalendarSelectedDatePrintFontSizeDefault = 13.f;
     NSDate *selectedDate = [param objectForKeyWithNil:@"selectedDate"];
     CGFloat dailyWidth = self.bounds.size.width/WEEKLY_VIEW_COUNT;
     
-    selectedDate = [self.selectedDate addDays:step * 7];
-    self.selectedDate = selectedDate;
-    [self dailyCalendarViewDidSelect:selectedDate];
     
     NSDate *dtStart;
     if(blnToday){
